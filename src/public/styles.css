@@ -1,0 +1,25 @@
+* {
+  color: gray;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: black;
+}
+
+#messages {
+  height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#message-input {
+  width: 100%;
+  height: 40px;
+}
+
+#send-button {
+  height: 40px;
+  position: absolute;
+  visibility: hidden;
+}

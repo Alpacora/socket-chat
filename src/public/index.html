@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Socket.io Learning Something</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <input id="name-input" type="text" placeholder="Your name">
+  <div id="messages"></div>
+  <form>
+    <button type="submit" id="send-button">Send</button>
+    <input id="message-input" type="text" placeholder="Type your message here">
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
+
+    function handleBuildMessage(name, message) {
+      const messageElement = document.createElement('p');
+      messageElement.innerText = `${name}: ${message}`;
+      messages.appendChild(messageElement);
+      messages.scrollTo(0, document.body.scrollHeight)
+    }
+
+    const messages = document.getElementById('messages');
+    const nameInput = document.getElementById('name-input');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+
+    sendButton.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      if (nameInput.value === '') {
+        alert('Você precisa colocar seu nome');
+        nameInput.focus();
+        return;
+      }
+
+      const message = messageInput.value;
+      socket.emit('message', { name: nameInput.value, message });
+      handleBuildMessage(nameInput.value, message)
+      messageInput.value = '';
+    });
+
+    socket.on('history', (data) => {
+      data.forEach(({ name, message }) => {
+        handleBuildMessage(name, message);
+      })
+    });
+
+    socket.on('message', ({ name, message }) => {
+      handleBuildMessage(name, message);
+    });
+  </script>
+</body>
+
+</html>
